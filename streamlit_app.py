@@ -51,20 +51,20 @@ if data is not None:
         age = st.number_input('Age', min_value=1, max_value=100, value=52)
         sex = st.selectbox('Sex', options=[(1, 'Male'), (0, 'Female')], format_func=lambda x: x[1])[0]
         cp = st.selectbox('Chest Pain Type (CP)', options=[
-            (0, 'Typical Angina'), (1, 'Atypical Angina'),
+            (0, 'Typical Angina'), (1, 'Atypical Angina'), 
             (2, 'Non-anginal Pain'), (3, 'Asymptomatic')
         ], format_func=lambda x: x[1])[0]
-        trestbps = st.number_input('Resting Blood Pressure (trestbps)', min_value=80, max_value=200, value=125)
-        chol = st.number_input('Serum Cholesterol (chol)', min_value=100, max_value=600, value=212)
+        trestbps = st.number_input('Resting Blood Pressure (trestbps)', min_value=80, max_value=200, value=125, help="Normal value is typically < 120 mmHg")
+        chol = st.number_input('Serum Cholesterol (chol)', min_value=100, max_value=600, value=212, help="Desirable level is < 200 mg/dL")
         fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', options=[(1, 'True'), (0, 'False')], format_func=lambda x: x[1])[0]
 
     with col2:
         restecg = st.selectbox('Resting Electrocardiographic Results (restecg)', options=[
             (0, 'Normal'), (1, 'ST-T wave abnormality'), (2, 'Probable or definite left ventricular hypertrophy')
         ], format_func=lambda x: x[1])[0]
-        thalach = st.number_input('Maximum Heart Rate Achieved (thalach)', min_value=60, max_value=220, value=168)
+        thalach = st.number_input('Maximum Heart Rate Achieved (thalach)', min_value=60, max_value=220, value=168, help="Often estimated as 220 minus your age.")
         exang = st.selectbox('Exercise Induced Angina (exang)', options=[(1, 'Yes'), (0, 'No')], format_func=lambda x: x[1])[0]
-        oldpeak = st.number_input('ST depression induced by exercise (oldpeak)', min_value=0.0, max_value=6.2, value=1.0, step=0.1)
+        oldpeak = st.number_input('ST depression induced by exercise (oldpeak)', min_value=0.0, max_value=6.2, value=1.0, step=0.1, help="A normal value is typically 0.")
         slope = st.selectbox('Slope of the peak exercise ST segment (slope)', options=[
             (0, 'Upsloping'), (1, 'Flat'), (2, 'Downsloping')
         ], format_func=lambda x: x[1])[0]
@@ -94,4 +94,5 @@ if data is not None:
         else:
             st.success('**Low probability of Heart Disease**', icon="💖")
             st.info("This is a prediction based on the provided data. Continue to maintain a healthy lifestyle and consult a doctor for regular check-ups.", icon="ℹ️")
+
 
