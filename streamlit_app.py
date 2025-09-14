@@ -1,19 +1,32 @@
 import streamlit as st
+import pandas as pd
 import numpy as np
-import joblib
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
-# --- MODEL LOADING ---
-# Load the trained machine learning model from the file.
-# @st.cache_resource ensures this is done only once.
-@st.cache_resource
-def load_model():
+# --- DATA AND MODEL LOADING ---
+
+# Cache the data loading to avoid reloading on every interaction.
+@st.cache_data
+def load_data():
+    """Loads the heart disease dataset from a CSV file."""
     try:
-        model = joblib.load('model.joblib')
-        return model
+        df = pd.read_csv('heart.csv')
+        return df
     except FileNotFoundError:
+        st.error("Error: 'heart.csv' not found. Please make sure the file is in the same directory as app.py.")
         return None
 
-model = load_model()
+# Cache the model training to avoid retraining on every interaction.
+@st.cache_resource
+def train_model(df):
+    """Trains a Logistic Regression model on the provided dataframe."""
+    X = df.drop('target', axis=1)
+    y = df['target']
+    # We train the model on the full dataset for the live app
+    model = LogisticRegression(max_iter=1000) # Increased max_iter for convergence
+    model.fit(X, y)
+    return model
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -22,13 +35,15 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- USER INTERFACE ---
-st.title("Heart Disease Prediction")
-st.markdown("Enter the patient's details below to predict the likelihood of heart disease.")
+# --- Main Application Logic ---
+data = load_data()
+if data is not None:
+    model = train_model(data)
 
-if model is None:
-    st.error("Model file not found. Please ensure `model.joblib` is in the same directory.")
-else:
+    # --- USER INTERFACE ---
+    st.title("Heart Disease Prediction")
+    st.markdown("Enter the patient's details below to predict the likelihood of heart disease.")
+
     # Create columns for a cleaner layout
     col1, col2 = st.columns(2)
 
@@ -36,13 +51,13 @@ else:
         age = st.number_input('Age', min_value=1, max_value=100, value=52)
         sex = st.selectbox('Sex', options=[(1, 'Male'), (0, 'Female')], format_func=lambda x: x[1])[0]
         cp = st.selectbox('Chest Pain Type (CP)', options=[
-            (0, 'Typical Angina'), (1, 'Atypical Angina'), 
+            (0, 'Typical Angina'), (1, 'Atypical Angina'),
             (2, 'Non-anginal Pain'), (3, 'Asymptomatic')
         ], format_func=lambda x: x[1])[0]
         trestbps = st.number_input('Resting Blood Pressure (trestbps)', min_value=80, max_value=200, value=125)
         chol = st.number_input('Serum Cholesterol (chol)', min_value=100, max_value=600, value=212)
         fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', options=[(1, 'True'), (0, 'False')], format_func=lambda x: x[1])[0]
-        
+
     with col2:
         restecg = st.selectbox('Resting Electrocardiographic Results (restecg)', options=[
             (0, 'Normal'), (1, 'ST-T wave abnormality'), (2, 'Probable or definite left ventricular hypertrophy')
@@ -60,19 +75,19 @@ else:
 
     # --- PREDICTION LOGIC ---
     if st.button('**Predict**', use_container_width=True):
-        # Prepare the feature array in the correct order
+        # Prepare the feature array in the correct order for the model
         features = np.array([[
-            age, sex, cp, trestbps, chol, fbs, restecg, 
+            age, sex, cp, trestbps, chol, fbs, restecg,
             thalach, exang, oldpeak, slope, ca, thal
         ]])
 
         # Make a prediction
         prediction = model.predict(features)
-        
+
         st.write("---")
         st.subheader("Prediction Result")
 
-        # Display the result
+        # Display the result with appropriate messaging
         if prediction[0] == 1:
             st.error('**High probability of Heart Disease**', icon="💔")
             st.warning("This is a prediction based on the provided data and does not constitute medical advice. Please consult a healthcare professional.", icon="⚠️")
