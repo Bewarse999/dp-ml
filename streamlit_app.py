@@ -18,5 +18,5 @@ with st.expander('data'):
 with st.expander('data visualization'):
  #age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal,target
 
- st.scatter_chart(data = heart_data, x = 'age' , y = 'cp', color = 'species')
+ st.bar_chart(data=None, *, x=age, y=fbs, x_label=None, y_label=None, color=#ffaa00, horizontal=False, stack=None, width=None, height=None, use_container_width=True)
  
