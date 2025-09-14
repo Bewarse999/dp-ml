@@ -15,4 +15,8 @@ with st.expander('data'):
  st.write('**Y**')
  Y = heart_data['target']
  Y
+with st.expander('data visualization'):
+ #age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal,target
+
+ st.scatter_chart(data = heart_data, x = 'age' , y = 'cp', color = 'species')
  
