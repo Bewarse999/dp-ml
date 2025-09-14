@@ -7,3 +7,4 @@ from sklearn.metrics import accuracy_score
 # loading the csv data to a Pandas DataFrame
 heart_data = pd.read_csv('heart.csv')
 heart_data.head()
+heart_data
