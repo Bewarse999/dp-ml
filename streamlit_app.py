@@ -15,8 +15,6 @@ with st.expander('data'):
  st.write('**Y**')
  Y = heart_data['target']
  Y
-with st.expander('data visualization'):
- #age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal,target
-
- st.bar_chart(data=None, *, x=age, y=fbs, x_label=None, y_label=None, color=#ffaa00, horizontal=False, stack=None, width=None, height=None, use_container_width=True)
+with st.sidebar:
+ st.header('Input features')
  
