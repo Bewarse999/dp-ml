@@ -9,3 +9,10 @@ with st.expander('data'):
  st.write('**Raw Data**')
  heart_data = pd.read_csv('heart.csv')
  heart_data
+ st.write('**X**')
+ X = heart_data.drop(columns='target',axis=1)
+ X
+ st.write('**Y**')
+ Y = heart_data['target']
+ Y
+ 
